@@ -1,31 +1,30 @@
 import csv
 
-# Функция для чтения данных из CSV файла
-def read_csv(file_path):
-    products = []
-    with open(file_path, 'F:\Admin\Desktop\products.csv', encoding='utf-8') as csvfile:
-        reader = csv.reader(csvfile)
-        # Пропускаем заголовок
-        next(reader)
-        for row in reader:
-            product = {
-                'name': row[0],
-                'quantity': int(row[1]),
-                'price': int(row[2])
-            }
-            products.append(product)
-    return products
 
-# Функция для подсчета итоговой суммы и вывода данных
-def print_purchase_list(products):
-    total_sum = 0
-    print("Нужно купить:")
-    for product in products:
-        total_sum += product['quantity'] * product['price']
-        print(f"{product['name']} - {product['quantity']} шт. за {product['price']} руб.")
-    print(f"Итоговая сумма: {total_sum} руб.")
+csv_file = 'products.csv'
 
-# Основная часть программы
-file_path = 'F:\Admin\Desktop'  # Укажите путь к вашему CSV файлу
-products = read_csv(file_path)
-print_purchase_list(products)
+import csv
+
+
+csv_file_path = 'products.csv'
+
+
+products = []
+total_sum = 0
+
+
+with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        product = row['Продукт']
+        quantity = int(row['Количество'])
+        price = int(row['Цена'])
+        total_sum += quantity * price
+        products.append((product, quantity, price))
+
+
+print("Нужно купить:")
+for product, quantity, price in products:
+    print(f"{product} - {quantity} шт. за {price} руб.")
+
+print(f"\nИтоговая сумма: {total_sum} руб.")

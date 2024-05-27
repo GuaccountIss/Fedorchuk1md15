@@ -1,61 +1,7 @@
 import json
 
 
-# Функция для чтения данных из JSON файла
-def read_json(file_path):
-    with open(file_path, 'r', encoding='utf-8') as jsonfile:
-        data = json.load(jsonfile)
-    return data['products']
 
-
-# Функция для вывода информации о продуктах
-def print_product_info(products):
-    for product in products:
-        name = product['name']
-        price = product['price']
-        weight = product['weight']
-        available = product['available']
-        availability = "В наличии" if available else "Нет в наличии!"
-
-        print(f"Название: {name}")
-        print(f"Цена: {price}")
-        print(f"Вес: {weight}")
-        print(f"{availability}\n")
-
-
-# Основная часть программы
-file_path = 'F:\Admin\Desktop\products.json'  # Укажите путь к вашему JSON файлу
-products = read_json(file_path)
-print_product_info(products)
-
-def read_json(file_path):
-    with open(file_path, 'r', encoding='utf-8') as jsonfile:
-        data = json.load(jsonfile)
-    return data['products']
-
-
-# Функция для записи данных в JSON файл
-def write_json(file_path, products):
-    with open(file_path, 'w', encoding='utf-8') as jsonfile:
-        json.dump({"products": products}, jsonfile, ensure_ascii=False, indent=4)
-
-
-# Функция для вывода информации о продуктах
-def print_product_info(products):
-    for product in products:
-        name = product['name']
-        price = product['price']
-        weight = product['weight']
-        available = product['available']
-        availability = "В наличии" if available else "Нет в наличии!"
-
-        print(f"Название: {name}")
-        print(f"Цена: {price}")
-        print(f"Вес: {weight}")
-        print(f"{availability}\n")
-
-
-# Функция для добавления нового продукта
 def add_product(products):
     name = input("Введите название продукта: ")
     price = int(input("Введите цену продукта: "))
@@ -65,24 +11,48 @@ def add_product(products):
     new_product = {
         "name": name,
         "price": price,
-        "weight": weight,
-        "available": available
+        "available": available,
+        "weight": weight
     }
+
     products.append(new_product)
 
 
-# Основная часть программы
-file_path = 'products.json'  # Укажите путь к вашему JSON файлу
 
-# Чтение текущих данных из файла
-products = read_json(file_path)
+def print_products(products):
+    for product in products:
+        name = product['name']
+        price = product['price']
+        weight = product['weight']
+        available = "В наличии" if product['available'] else "Нет в наличии!"
 
-# Добавление нового продукта
-add_product(products)
+        print(f"Название: {name}")
+        print(f"Цена: {price}")
+        print(f"Вес: {weight}")
+        print(f"{available}\n")
 
-# Запись обновленных данных обратно в файл
-write_json(file_path, products)
 
-# Вывод обновленного списка продуктов
-print("Обновленный список продуктов:")
-print_product_info(products)
+
+file_path = 'products.json'
+
+
+try:
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+except FileNotFoundError:
+    data = {'products': []}
+
+
+add_more = input("Хотите добавить новый продукт? (да/нет): ").strip().lower() == 'да'
+
+while add_more:
+    add_product(data['products'])
+    add_more = input("Хотите добавить еще один продукт? (да/нет): ").strip().lower() == 'да'
+
+
+with open(file_path, 'w', encoding='utf-8') as file:
+    json.dump(data, file, ensure_ascii=False, indent=4)
+
+
+print("\nИтоговый список продуктов:")
+print_products(data['products'])
